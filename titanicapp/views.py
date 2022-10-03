@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.contrib import messages
+
 
 # Create your views here.
 # our home page view
@@ -23,16 +25,21 @@ def getPredictions(pclass, sex, age, sibsp, parch, fare, C, Q, S):
 
 # our result page view
 def result(request):
-    pclass = int(request.GET['pclass']) 
+    pclass = int(request.GET['pclass'])     
     sex = int(request.GET['sex'])
     age = int(request.GET['age'])
+    if age>120:
+        messages.error(request,'Age cannot be greater than 120')
+        return render(request,'titanicapp/index.html')
     sibsp = int(request.GET['sibsp'])
     parch = int(request.GET['parch'])
     fare = int(request.GET['fare'])
     embC = int(request.GET['embC'])
     embQ = int(request.GET['embQ'])
     embS = int(request.GET['embS'])
-
     result = getPredictions(pclass, sex, age, sibsp, parch, fare, embC, embQ, embS)
 
     return render(request, 'titanicapp/result.html', {'result':result})
+
+def error(request):
+    return render(request, 'titanicapp/error.html')
